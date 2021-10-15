@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ Đếm Thời Gian</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <span class="time-input">
+        <label for="time" class="label-time"> Nhập phút</label>
+        <input type="text" name="time" id="input-time">
+        <button class="input-btn" id="start">Start</button>
+        <button class="input-btn" id="stop">Stop</button>
+        <button class="input-btn" id="refresh">Refresh</button>
+        <audio src="./Nhac-bao-thuc-Quan-doi-www_nhacchuongvui_com.mp3"></audio>
+    </span>
+    <div class="container">
+        <h2>
+            <span>Hãy Cùng Nhau Đếm Ngược </span>
+        </h2>
+        <div class="countdown">
+            <!-- <div id="day"></div> -->
+            <!-- <div id="hour"></div> -->
+            <div id="minute"></div>
+            <div id="second"></div>
+        </div>
+    </div>
+    <!-- <script>
+        /*Lấy thời gian tết âm lịch (mily giây)*/
+        var thoigianConLai;
+        function newYear() {
+            /*Lấy thời gian ngày hiện tại (mily giây) */
+            var ngayHienTai = new Date().getTime();
+            /*Tính thời gian còn lại (mily giây) */
+            thoigianConLai = tetAmLich - ngayHienTai;
+
+            /*Chuyển đơn vị thời gian tương ứng sang mili giây*/
+            var giay = 1000;
+            var phut = giay * 60;
+            var gio = phut * 60;
+            var ngay = gio * 24;
+
+            /*Tìm ra thời gian theo ngày, giờ, phút giây còn lại thông qua cách chia lấy dư(%) và làm tròn số(Math.floor) trong Javascript*/
+            var d = Math.floor(thoigianConLai / (ngay));
+            var h = Math.floor((thoigianConLai % (ngay)) / (gio));
+            var m = Math.floor((thoigianConLai % (gio)) / (phut));
+            var s = Math.floor((thoigianConLai % (phut)) / (giay));
+
+            /*Hiển thị kết quả ra các thẻ Div với ID tương ứng*/
+            document.getElementById("day").innerText = d;
+            document.getElementById("hour").innerText = h;
+            document.getElementById("minute").innerText = m;
+            document.getElementById("second").innerText = s;
+
+            return thoigianConLai;
+        }
+        /*Thiết Lập hàm sẽ tự động chạy lại sau 1s*/
+        var setin = setInterval(function () {
+            newYear();
+            console.log(thoigianConLai)
+            if (thoigianConLai <= 0) {
+                document.querySelector('.countdown').classList.add('close');
+                clearInterval(setin);
+            }
+        }, 1000)
+    </script> -->
+
+    <script>
+        var timeInput = document.querySelector('input[name="time"]');
+        var startBtn = document.querySelector('#start');
+        var stopBtn = document.querySelector('#stop');
+        var refreshBtn = document.querySelector('#refresh');
+
+        var audio = document.querySelector('audio');
+
+        document.getElementById("minute").innerText = '00';
+        document.getElementById("second").innerText = '00';
+        var interval;
+        var i = 0;
+        var secondConlai;
+        var secondStart;
+        startBtn.onclick = function () {
+            if (timeInput.value > 0 ) {
+                if(i==0){
+                    secondStart = timeInput.value * 60;
+                }
+                else{
+                   secondStart = secondConlai;
+                }
+                interval = setInterval(function () {
+                    secondStart = secondStart - 1;
+                    secondConlai = countDown(secondStart * 1000);
+                    if (secondStart == 0) {
+                        clearInterval(interval);
+                        setTimeout(function () {
+                            alert('Hết giờ !');
+                        }, 1000)
+                        audio.play();
+                    }
+                    i++;
+                }, 1000)
+
+            } else {
+                alert('Hay nhap so phut!')
+            }
+        }
+        stopBtn.onclick = function () {
+            clearInterval(interval);
+            audio.pause();
+        }
+        refreshBtn.onclick = function() {
+            clearInterval(interval);
+            document.getElementById("minute").innerText = '00';
+            document.getElementById("second").innerText = '00';
+            timeInput.value = '';
+            audio.pause();
+            i=0;
+        }
+        function countDown(secondTongMl) {
+            var secondTong = Math.floor(secondTongMl / 1000);
+            var minute = 0;
+            var second = 0;
+            if (secondTong % 60 === 0) {
+                minute = secondTong / 60;
+                second = 0;
+            } else {
+                minute = Math.floor(secondTong / 60);
+                second = secondTong % 60;
+            }
+            minute < 10 ? document.getElementById("minute").innerText = '0' + minute : document.getElementById("minute")
+                .innerText = minute;
+            second < 10 ? document.getElementById("second").innerText = '0' + second : document.getElementById("second")
+                .innerText = second;
+            return minute*60+second;
+        }
+    </script>
+</body>
+
+</html>
